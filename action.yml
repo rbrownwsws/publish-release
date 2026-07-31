@@ -1,0 +1,28 @@
+# $schema=https://www.schemastore.org/github-action.json
+name: "Publish Release"
+description: "Publish a draft GitHub Release so it is visible to the public."
+
+inputs:
+  release-id:
+    description: "The ID of the draft Release to make public."
+    required: true
+  github-api-token:
+    description: "The GitHub API token to use for authentication"
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: "Publish Release"
+      shell: bash
+      env:
+        RELEASE_ID: ${{ inputs.release-id }}
+        GITHUB_API_TOKEN: ${{ inputs.github-api-token }}
+      run: |
+        set -euo pipefail
+        
+        SCRIPT="${GITHUB_ACTION_PATH}/publish-release.sh"
+        chmod +x "${SCRIPT}"
+        "${SCRIPT}"
